@@ -110,9 +110,7 @@ public class Main {
                 if (choiceDelete == 3) {
                     break;
                 }
-                else{
-                    System.out.println("Invalid choice, please try again later.");
-                }
+               
 
                 break;
 
