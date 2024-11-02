@@ -44,15 +44,16 @@ public class Library {
      * return: void
      * purpose: Removes a book from the collection by using the book's barcode
      */
-    public void removeBookByBarcode(String barcode) {
+    public String removeBookByBarcode(String barcode) {
         for(int i = 0; i < books.size(); i++) {
             if(books.get(i).getBarcode().equals(barcode)) {
-                System.out.println( books.get(i).getTitle()+ " has been removed");
+                String message = books.get(i).getTitle()+ " has been removed";
                 books.remove(i);
-                return;
+                return message;
             }
         }
-        System.out.println("Invalid choice, please try again later.");
+        String message = "Invalid choice, please try again later.";
+        return message;
     }
     //----------------------------------------------------------------------------------------
     /*
@@ -61,15 +62,16 @@ public class Library {
      * return: void
      * purpose: Removes a book from the collection by using the book's title
      */
-    public void removeBookByTitle(String Title){
+    public String removeBookByTitle(String Title){
         for(int i = 0; i < books.size(); i++) {
             if(books.get(i).getTitle().equals(Title)) {
-                System.out.println( books.get(i).getTitle()+ " has been removed");
+                 String message = books.get(i).getTitle()+ " has been removed";
                 books.remove(i);
-                return;
+                return message;
             }
         }
-        System.out.println("Invalid choice, please try again later.");
+       String message = "Invalid choice, please try again later.";
+        return message;
     }
     //--
     // --------------------------------------------------------------------------------------
@@ -99,20 +101,23 @@ public class Library {
      * purpose: Takes a book title and checks to see if it's available
      *          if it is, this method changes the Book status to "Checked Out"
      */
-    public void checkOutBook(String title) {
+    public String checkOutBook(String title) {
         for (Book book : books) {
             if(book.getTitle().equals(title)) {
                 if(book.getStatus().equals("Available")) {
                     book.setStatus("Checked Out");
-                    System.out.println(book.getTitle() + " is checked out.");
-
+                    book.setDueDate("October");
+                    String message = book.getTitle() + " is checked out.";
+                    return message;
                 } else{
-                    System.out.println("Unfortunately, " + book.getTitle() + " book is not available");
+                    String message = "Unfortunately, " + book.getTitle() + " is not available.";
+                    return message;
                 }
-                return;
+
 
             }
         }
+        return "Book not found";
     }
 
 
@@ -140,8 +145,30 @@ public class Library {
 
 
     //----------------------------------------------------------------------------------------
+    /*
+    * method: bookExists
+    * Parameters: Title
+    * return: Boolean
+    * Purpose: checks to see if a certain book exists in the library.
+     */
+    public boolean bookExists(String title) {
+        for (Book book : books) {
+            if(book.getTitle().equals(title)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    //------------------------------------------------------------------------------------------------------------------
+    /*
+     * Method: getBooks
+     * Parameters: None
+     * Return: List
+     * Purpose: Returns the current list of books to the GUI
+     */
 
-
-
+    public List<Book> getBooks() {
+        return books;
+    }
 
 }// End of Library Class

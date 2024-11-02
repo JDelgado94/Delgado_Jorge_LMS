@@ -37,10 +37,10 @@ public class Book {
         return author;
     }
     public String getStatus(){
-        return status; 
+        return status;
     }
     public String getGenre(){
-        return genre; 
+        return genre;
     }
     public String getDueDate(){
         return dueDate;
@@ -49,7 +49,7 @@ public class Book {
 
     // Setter methods:
     public void setBarcode(String barcode) {
-        
+
         this.barcode = barcode;
     }
     public void setTitle(String title) {
@@ -67,5 +67,4 @@ public class Book {
         this.dueDate = dueDate;}
     //----------------------------------------------------------------------------------------
 } // end of Book Class
-
 
