@@ -1,11 +1,11 @@
 /*Project: Library Management System
 Name: Jorge Delgado
-Date: 10/29/2024
+Date: 11/08/2024
 Course: CEN:3024
 Class Name: MainMenu
 Description: This class will contain the Main Menu Gui and
              will perform the following:
-             1. List all books in the collection
+             1. List all books in the database
              2. Add books
              3. Remove books (By Barcode and Title)
              4. Check in Books
@@ -47,7 +47,8 @@ public class MainMenu extends JFrame {
         viewLibraryButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayLibrary();
+               displayLibrary();
+
             }
         });
 
@@ -55,15 +56,13 @@ public class MainMenu extends JFrame {
         addBookButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String Barcode = JOptionPane.showInputDialog("Enter Book Barcode:");
-                String title = JOptionPane.showInputDialog("Enter Book Title:");
-                String author = JOptionPane.showInputDialog("Enter Book Author:");
-                String genre = JOptionPane.showInputDialog("Enter Book Genre:");
+                String barcode = JOptionPane.showInputDialog("Enter the book code");
+                String title = JOptionPane.showInputDialog("Enter the title");
+                String author = JOptionPane.showInputDialog("Enter the author");
+                String genre = JOptionPane.showInputDialog("Enter the genre");
                 String status = "Available";
-                String dueDate = "N/A";
-                Book book = new Book(Barcode, title, author, genre, status, dueDate);
-                library.addBook(book);
-                JOptionPane.showMessageDialog(mainMenuPanel, title +" Has Been Added to the Library");
+                String dueDate = null;
+                library.addBook(barcode, title, author, genre, status, dueDate);
                 displayLibrary();
             }
         });
@@ -96,6 +95,7 @@ public class MainMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String title = JOptionPane.showInputDialog("Enter the Title of The Book You Wish To Check Out:");
                 String message = library.checkOutBook(title);
+                library.checkOutBook(title);
                 JOptionPane.showMessageDialog(mainMenuPanel, message);
                 displayLibrary();
             }
@@ -125,20 +125,22 @@ public class MainMenu extends JFrame {
 * method: displayLibrary
 * parameters: None
 * return: void
-* purpose: Displays The current books in the Library to the GUI
+* purpose: Displays The current books in the Library database to the GUI
 * */
 private void displayLibrary(){
+    List <String> books = library.listAllBooks();
+
+
     StringBuilder booksInLibrary = new StringBuilder("Books in the Library: \n");
-    if (library.getBooks().isEmpty()) {
+    if (books.isEmpty()) {
         JOptionPane.showMessageDialog(mainMenuPanel, "There are no books in the library");
     }
     else {
-        for (Book book : library.getBooks()) {
-            booksInLibrary.append(book.getBarcode()).append(",").append(book.getTitle()).append(",")
-                    .append(book.getAuthor()).append(",").append(book.getGenre()).append(",")
-                    .append(book.getStatus()).append(",").append(book.getDueDate()).append("\n");
+        for (String book : books) {
+            booksInLibrary.append(book).append("\n");
         }
         JOptionPane.showMessageDialog(mainMenuPanel, booksInLibrary.toString());
     }
     }
 }
+
