@@ -17,7 +17,7 @@ import java.util.Scanner;
 //Main Method:
 public class Main {
     public static void main(String[] args) {
-        //Starts GUI Operation:
+       
         Library lib = new Library();
         MainMenu mainMenu = new MainMenu(lib);
 
