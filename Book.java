@@ -1,11 +1,11 @@
 /*
 Project: Library Management System
 Name: Jorge Delgado
-Date: 9/27/2024
+Date: 11/08/2024
 Course: CEN:3024
 Class Name: Book Class
 Description: This class will create a book object with a
-Book ID, Title, and Author
+barcode, title, author, genre, status and a due date.
 */
 public class Book {
     private String barcode;
@@ -67,4 +67,5 @@ public class Book {
         this.dueDate = dueDate;}
     //----------------------------------------------------------------------------------------
 } // end of Book Class
+
 
