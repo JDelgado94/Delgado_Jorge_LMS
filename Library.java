@@ -1,76 +1,110 @@
 /*Project: Library Management System
 Name: Jorge Delgado
-Date: 9/27/2024
+Date: 11/08/2024
 Course: CEN:3024
 Class Name: Library Class
 Description: This class will contain all the book objects,
              users will be able to:
-             1. List all books in the collection
-             2. Add books
-             3. Remove books
-             4. Check in Books
-             5. Check out Books
+             1. Connect to the library database and extract its data
+             2. Modify the library by adding, removing, and checking
+             in/out books.
 */
 
-import java.io.*;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Library {
     private List<Book> books;
-
+    private Connection connection;
 
     // Constructor:
     public Library() {
         books = new ArrayList<>();
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root",
+                    "12341234!");
+
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 
     //----------------------------------------------------------------------------------------
     /*
      * method: addBook
-     * parameters: Book
+     * parameters: barcode, title, author, genre,
+     *             status, dueDate
      * return: void
-     * purpose: Adds a book to the Library
+     * purpose: Adds a book to the Library Database
      */
-    public void addBook(Book book) {
-        books.add(book);
+    public void addBook(String barcode, String title, String author, String genre,String status, String dueDate ) {
+        String addBookQuery = "INSERT INTO books (barcode, title, author, genre, status, due_date) " +
+                "VALUES (?, ?, ?, ?, 'Available', NULL)";
+        try(PreparedStatement ps = connection.prepareStatement(addBookQuery)){
+            ps.setString(1, barcode);
+            ps.setString(2, title);
+            ps.setString(3, author);
+            ps.setString(4, genre);
+            ps.executeUpdate();
+
+        } catch (SQLException e){
+            e.printStackTrace();
+
+        }
     }
 
     //----------------------------------------------------------------------------------------
     /*
      * method: removeBookByBarcode
      * parameters: barcode
-     * return: void
-     * purpose: Removes a book from the collection by using the book's barcode
+     * return: String
+     * purpose: Removes a book from the library database
+     *          by using the book's barcode
      */
     public String removeBookByBarcode(String barcode) {
-        for(int i = 0; i < books.size(); i++) {
-            if(books.get(i).getBarcode().equals(barcode)) {
-                String message = books.get(i).getTitle()+ " has been removed";
-                books.remove(i);
+        String message;
+        String removeBookBcQuery = "DELETE FROM books WHERE barcode = ?";
+        try(PreparedStatement deleteBcStatement = connection.prepareStatement(removeBookBcQuery)) {
+            deleteBcStatement.setString(1, barcode);
+            deleteBcStatement.executeUpdate();
+            if (deleteBcStatement.getUpdateCount() == 0) {
+                message = "Error: Book #" + barcode + " was not deleted";
                 return message;
             }
+        }catch (SQLException e){
+            e.printStackTrace();
+            message = "Error: Book #" + barcode + " was not found";
+            return message;
         }
-        String message = "Invalid choice, please try again later.";
+        message = "Book #" + barcode + " has been deleted";
         return message;
     }
     //----------------------------------------------------------------------------------------
     /*
      * method: removeBookByTitle
      * parameters: title
-     * return: void
-     * purpose: Removes a book from the collection by using the book's title
+     * return: String
+     * purpose: Removes a book from the library database
+     *          by using the book's title
      */
-    public String removeBookByTitle(String Title){
-        for(int i = 0; i < books.size(); i++) {
-            if(books.get(i).getTitle().equals(Title)) {
-                 String message = books.get(i).getTitle()+ " has been removed";
-                books.remove(i);
+    public String removeBookByTitle(String title){
+        String message;
+        String removeBookTQuery = "DELETE FROM books WHERE barcode = ?";
+        try(PreparedStatement deleteTStatement = connection.prepareStatement(removeBookTQuery)) {
+            deleteTStatement.setString(1, title);
+            deleteTStatement.executeUpdate();
+            if(deleteTStatement.getUpdateCount() == 0){
+                message = "Error: " + title + " was not deleted";
                 return message;
             }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+            message = "Error: " + title + " was not found";
+            return message;
         }
-       String message = "Invalid choice, please try again later.";
+        message = title + " has been deleted";
         return message;
     }
     //--
@@ -78,46 +112,55 @@ public class Library {
     /*
      * method: listAllBooks
      * parameters: None
-     * return: void
-     * purpose: Lists all book objects currently in the library
+     * return: List <String>
+     * purpose: Lists all book objects currently in the library database
      */
-    public void listAllBooks() {
-        if (books.isEmpty()) {
-                System.out.println("No books in library");
-        } else {
-            System.out.println("Books in library:");
-            for (Book book : books) {
-                System.out.println(book.getBarcode()+ "," + book.getTitle() + "," + book.getAuthor()
-                                     + "," + book.getGenre() + "," + book.getStatus() + "," + book.getDueDate());
+    public List<String> listAllBooks() {
+        List<String> books = new ArrayList<>();
+        String query = "SELECT * FROM books";
+        try (Statement viewLibraryStatement = connection.createStatement();
+             ResultSet viewLibraryRs = viewLibraryStatement.executeQuery(query)) {
+            while (viewLibraryRs.next()) {
+                String barcode = viewLibraryRs.getString("barcode");
+                String title = viewLibraryRs.getString("title");
+                String author = viewLibraryRs.getString("author");
+                String genre = viewLibraryRs.getString("genre");
+                String status = viewLibraryRs.getString("status");
+                String dueDate = viewLibraryRs.getString("due_date");
+
+                String bookDetails =  barcode +": " + title +", " + author + ", " + genre + ", "+ status+ ", " + (dueDate != null ? dueDate : "N/A");
+                books.add(bookDetails);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return books;
     }
 
     //----------------------------------------------------------------------------------------
     /*
      * method: checkOutBook
      * parameters: title
-     * return: void
+     * return: String
      * purpose: Takes a book title and checks to see if it's available
      *          if it is, this method changes the Book status to "Checked Out"
      */
     public String checkOutBook(String title) {
-        for (Book book : books) {
-            if(book.getTitle().equals(title)) {
-                if(book.getStatus().equals("Available")) {
-                    book.setStatus("Checked Out");
-                    book.setDueDate("October");
-                    String message = book.getTitle() + " is checked out.";
-                    return message;
-                } else{
-                    String message = "Unfortunately, " + book.getTitle() + " is not available.";
-                    return message;
-                }
-
-
+        String message = "Book checked out successfully!";
+        String checkOutBookQuery = "UPDATE books SET status = 'Checked Out', due_date = DATE_ADD(CURDATE(), INTERVAL 4 WEEK) " +
+                "WHERE title = ? AND status = 'Available'";
+        try(PreparedStatement checkOutBookStatement = connection.prepareStatement(checkOutBookQuery)) {
+            checkOutBookStatement.setString(1, title);
+            int bookUpdated = checkOutBookStatement.executeUpdate();
+            if(bookUpdated == 0){
+                return message = "Book Not Available";
             }
+
+        } catch (SQLException e){
+            e.printStackTrace();
         }
-        return "Book not found";
+
+        return message;
     }
 
 
@@ -130,45 +173,15 @@ public class Library {
      *          if it is, this method changes the Book status to "Available"
      */
        public void checkInBook(String title) {
-           for (Book book : books) {
-               if(book.getTitle().equals(title)) {
-                   if(book.getStatus().equals("Checked Out")) {
-                       book.setStatus("Available");
-                       System.out.println(book.getTitle() + " is checked in.");
-                   }
-                   else{
-                       System.out.println("Book is already checked in.");
-                   }
-               }
-           }
+          String checkInBookQuery = "Update books SET status = 'Available', due_date = NULL WHERE title = ?";
+          try(PreparedStatement checkInBookStatement = connection.prepareStatement(checkInBookQuery)) {
+              checkInBookStatement.setString(1, title);
+              checkInBookStatement.executeUpdate();
+          }catch (SQLException e) {
+              e.printStackTrace();
+          }
+
        }
-
-
-    //----------------------------------------------------------------------------------------
-    /*
-    * method: bookExists
-    * Parameters: Title
-    * return: Boolean
-    * Purpose: checks to see if a certain book exists in the library.
-     */
-    public boolean bookExists(String title) {
-        for (Book book : books) {
-            if(book.getTitle().equals(title)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    //------------------------------------------------------------------------------------------------------------------
-    /*
-     * Method: getBooks
-     * Parameters: None
-     * Return: List
-     * Purpose: Returns the current list of books to the GUI
-     */
-
-    public List<Book> getBooks() {
-        return books;
-    }
-
+       
 }// End of Library Class
+
