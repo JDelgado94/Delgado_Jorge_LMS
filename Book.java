@@ -1,12 +1,15 @@
-/*
-Project: Library Management System
+/*Project: Library Management System
 Name: Jorge Delgado
 Date: 11/08/2024
 Course: CEN:3024
-Class Name: Book Class
-Description: This class will create a book object with a
-barcode, title, author, genre, status and a due date.
 */
+
+/**
+ * Book -- Creates book objects for the library
+ * Description -- This class will contain barcode, title,
+ *                author, genre, status and a due date.
+ */
+
 public class Book {
     private String barcode;
     private String title;
@@ -15,7 +18,19 @@ public class Book {
     private String status;
     private String dueDate;
 
-    // Constructor method:
+    /**
+     * Constructor for Book
+     *
+     * @param barcode -- A unique number that identifies each book.
+     *                   Is the primary key.
+     * @param title -- Title of the book.
+     * @param author -- Author of the book.
+     * @param genre -- Genre of the book.
+     * @param status -- The status of the book (Available, Checked out)
+     * @param dueDate -- The date that the book needs to be returned when
+     *                   checked out.
+     */
+
     public Book(String barcode, String title, String author, String genre, String status, String dueDate) {
         this.barcode = barcode;
         this.title = title;
@@ -26,7 +41,7 @@ public class Book {
 
     }
     //----------------------------------------------------------------------------------------
-    // Getter Methods:
+    //Getter Methods:
     public String getBarcode() {
         return barcode;
     }
