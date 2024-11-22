@@ -2,23 +2,31 @@
 Name: Jorge Delgado
 Date: 11/08/2024
 Course: CEN:3024
-Class Name: Library Class
-Description: This class will contain all the book objects,
-             users will be able to:
-             1. Connect to the library database and extract its data
-             2. Modify the library by adding, removing, and checking
-             in/out books.
 */
+
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Library -- Contains all the book objects.
+ * Description -- This class allows users to:
+ *                1. Connect to the library database and extract its data
+ *                2. Modify the library by adding, removing, and checking
+ *                   in/out books.
+ */
+
 public class Library {
     private List<Book> books;
     private Connection connection;
 
-    // Constructor:
+    /**
+     * Constructor for Library -- Connects the library Management System to
+     *                            the database.
+     */
+
     public Library() {
         books = new ArrayList<>();
         try {
@@ -31,13 +39,20 @@ public class Library {
     }
 
     //----------------------------------------------------------------------------------------
-    /*
-     * method: addBook
-     * parameters: barcode, title, author, genre,
-     *             status, dueDate
-     * return: void
-     * purpose: Adds a book to the Library Database
+
+    /**
+     * Method -- addBook
+     * Description -- Adds a book to the Library Database
+     * @param barcode -- A unique number that identifies each book.
+     *                Is the primary key.
+     * @param title -- Title of the book.
+     * @param author -- Author of the book.
+     * @param genre -- Genre of the book.
+     * @param status -- The status of the book (Available, Checked out)
+     * @param dueDate -- The date that the book needs to be returned when
+     *                checked out.
      */
+
     public void addBook(String barcode, String title, String author, String genre,String status, String dueDate ) {
         String addBookQuery = "INSERT INTO books (barcode, title, author, genre, status, due_date) " +
                 "VALUES (?, ?, ?, ?, 'Available', NULL)";
@@ -55,13 +70,16 @@ public class Library {
     }
 
     //----------------------------------------------------------------------------------------
-    /*
-     * method: removeBookByBarcode
-     * parameters: barcode
-     * return: String
-     * purpose: Removes a book from the library database
-     *          by using the book's barcode
+
+    /**
+     * method -- removeBookByBarcode
+     * description -- Removes a book from the library database
+     *                by using the book's barcode
+     * @param barcode -- A unique number that identifies each book.
+     *                   Is the primary key.
+     * @return message -- Lets the user know if the book was removed.
      */
+
     public String removeBookByBarcode(String barcode) {
         String message;
         String removeBookBcQuery = "DELETE FROM books WHERE barcode = ?";
@@ -81,12 +99,13 @@ public class Library {
         return message;
     }
     //----------------------------------------------------------------------------------------
-    /*
-     * method: removeBookByTitle
-     * parameters: title
-     * return: String
-     * purpose: Removes a book from the library database
-     *          by using the book's title
+
+    /**
+     * method -- removeBookByTitle
+     * description -- Removes a book from the library database
+     *                by using the book's title
+     * @param title -- Title of the book.
+     * @return message -- Lets the user know if the book was removed.
      */
     public String removeBookByTitle(String title){
         String message;
@@ -109,11 +128,12 @@ public class Library {
     }
     //--
     // --------------------------------------------------------------------------------------
-    /*
-     * method: listAllBooks
-     * parameters: None
-     * return: List <String>
-     * purpose: Lists all book objects currently in the library database
+
+    /**
+     * Method -- listAllBooks
+     * Description -- Lists all book objects currently in the library database.
+     * @return books -- Grabs the list of books in the database and returns them
+     *                  to the user
      */
     public List<String> listAllBooks() {
         List<String> books = new ArrayList<>();
@@ -138,12 +158,14 @@ public class Library {
     }
 
     //----------------------------------------------------------------------------------------
-    /*
-     * method: checkOutBook
-     * parameters: title
-     * return: String
-     * purpose: Takes a book title and checks to see if it's available
-     *          if it is, this method changes the Book status to "Checked Out"
+
+    /**
+     * Method -- checkOutBook
+     * Description -- Takes a book title and checks to see if it's available
+     *                 if it is, this method changes the Book status to "Checked Out".
+     * @param title -- Title of the book.
+     * @return message -- Lets the user know if the book was checked out or
+     *                    not available.
      */
     public String checkOutBook(String title) {
         String message = "Book checked out successfully!";
@@ -165,12 +187,12 @@ public class Library {
 
 
     //----------------------------------------------------------------------------------------
-    /*
-     * method: checkInBook
-     * parameters: title
-     * return: void
-     * purpose: Takes a book title checks to see if it is checked out and
-     *          if it is, this method changes the Book status to "Available"
+
+    /**
+     * Method -- checkInBook
+     * Description -- Takes a book title checks to see if it is checked out and
+     *                if it is, this method changes the Book status to "Available"
+     * @param title -- Title of the book.
      */
        public void checkInBook(String title) {
           String checkInBookQuery = "Update books SET status = 'Available', due_date = NULL WHERE title = ?";
@@ -182,6 +204,5 @@ public class Library {
           }
 
        }
-       
-}// End of Library Class
 
+}// End of Library Class
