@@ -2,20 +2,23 @@
 Name: Jorge Delgado
 Date: 11/08/2024
 Course: CEN:3024
-Class Name: MainMenu
-Description: This class will contain the Main Menu Gui and
-             will perform the following:
-             1. List all books in the database
-             2. Add books
-             3. Remove books (By Barcode and Title)
-             4. Check in Books
-             5. Check out Books
 */
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
+/**
+ * MainMenu -- sets up the Library Management System GUI
+ * Description -- This class will perform the following:
+ *                1. List all books in the database
+ *                2. Add books
+ *                3. Remove books (By Barcode and Title)
+ *                4. Check in Books
+ *                5. Check out Books
+ */
+
 
 public class MainMenu extends JFrame {
 
@@ -33,7 +36,11 @@ public class MainMenu extends JFrame {
     private List<Book> books;
 
 
-    // Constructor: ----------------------------------------------------------------------------------------------------
+    /**
+     * Constructor for Main Menu
+     * @param library -- passes a library of books into the GUI
+     */
+
     public MainMenu(Library library) {
         this.library = library;
         setContentPane(mainMenuPanel);
@@ -121,13 +128,12 @@ public class MainMenu extends JFrame {
         });
     }
 //----------------------------------------------------------------------------------------------------------------------
-/*
-* method: displayLibrary
-* parameters: None
-* return: void
-* purpose: Displays The current books in the Library database to the GUI
-* */
-private void displayLibrary(){
+
+    /**
+     * Method -- displayLibrary
+     * Description -- Displays all the books in the library to the GUI.
+     */
+    private void displayLibrary(){
     List <String> books = library.listAllBooks();
 
 
@@ -142,5 +148,4 @@ private void displayLibrary(){
         JOptionPane.showMessageDialog(mainMenuPanel, booksInLibrary.toString());
     }
     }
-}
-
+}//End of Main Menu
